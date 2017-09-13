@@ -1,0 +1,23 @@
+//
+//  TMDB-Prefix.pch
+//  TMDB_DEMO_MVC
+//
+//  Created by webskitters on 13/09/17.
+//  Copyright © 2017 webskitters. All rights reserved.
+//
+
+#ifndef TMDB_Prefix_pch
+#define TMDB_Prefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "Constant.h"
+#import "GloalController.h"
+#import "ServiceHandler.h"
+#import "UIImageView+WebCache.h"
+
+
+#endif /* TMDB_Prefix_pch */
