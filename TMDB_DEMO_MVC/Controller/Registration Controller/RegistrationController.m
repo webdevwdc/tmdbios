@@ -44,23 +44,30 @@
     [ServiceRequestManager registerWithParams:dictParams withCompletion:^(NSData *data, NSURLResponse *response, NSError *error){
         [CMHud hideHUDForView:self.view animated:YES];
         
-        if (!error){
-            NSError *error = nil;
-            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-            NSLog(@"%@",responseDict);
-            if ([[responseDict valueForKey:@"status"] intValue] == 200) {
-                
-                [self navigateToDashboardpage];
-                
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            if (!error){
+                NSError *error = nil;
+                NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+                NSLog(@"%@",responseDict);
+                if ([[responseDict valueForKey:@"status"] intValue] == 200) {
+                    
+                    [self navigateToDashboardpage];
+                    
+                }
+                else{
+                    [DataManager showAlertWithTitle:@"Alert" withMessage:[responseDict valueForKey:@"message"] withController:self];
+                }
             }
             else{
-                [DataManager showAlertWithTitle:@"Alert" withMessage:[responseDict valueForKey:@"message"] withController:self];
+                
+                [DataManager showAlertWithTitle:@"Alert" withMessage:@"Please Try Again.Something wrong happened." withController:self];
             }
-        }
-        else{
+
             
-            [DataManager showAlertWithTitle:@"Alert" withMessage:@"Please Try Again.Something wrong happened." withController:self];
-        }
+        });
+        
         
     }];
  

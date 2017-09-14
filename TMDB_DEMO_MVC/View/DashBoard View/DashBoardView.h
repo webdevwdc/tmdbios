@@ -20,4 +20,7 @@
 
 - (void)initializeViewWithController:(DashBoardController *)dashViewController;
 
+- (void)populateTableWithMovieArrayWithDate:(NSMutableArray *)arrMovieDate andArrayWithPopularity:(NSMutableArray *)arrMoviePolular andArrayWithTopRated:(NSMutableArray *)arrMovieTopRated;
+
+
 @end

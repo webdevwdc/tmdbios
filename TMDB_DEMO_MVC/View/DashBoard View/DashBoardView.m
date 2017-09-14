@@ -9,7 +9,7 @@
 #import "DashBoardView.h"
 #import "TableCell.h"
 #import "CollectionCell.h"
-#import "CMHud.h"
+
 
 #define IMAGE_URL @"http://image.tmdb.org/t/p/w780/"
 
@@ -34,11 +34,23 @@
     
     tblMovieList.tableHeaderView = sectionView;
     
-    [self movieListFetchForDateLimit];
+    [dashController movieListFetchForDateLimit];
 
     
-   
+}
 
+- (void)populateTableWithMovieArrayWithDate:(NSMutableArray *)arrMovieDate andArrayWithPopularity:(NSMutableArray *)arrMoviePolular andArrayWithTopRated:(NSMutableArray *)arrMovieTopRated{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        arrDateMovieList = arrMovieDate;
+        arrPopularMovieList = arrMoviePolular;
+        arrTopRatedMovieList = arrMoviePolular;
+        
+        [tblMovieList reloadData];
+
+        
+    });
     
 }
 
@@ -188,87 +200,6 @@ minimumLineSpacingForSectionAtIndex:(NSInteger)section
 }
 
 
-#pragma mark - Movie List Fetch According to Date Limit
-
--(void)movieListFetchForDateLimit{
-    
-    [CMHud showHUDAddedTo:dashController.view animated:YES];
-    
-    NSString *urlRequest = @"http://api.themoviedb.org/3/discover/movie?api_key=da86572d94091de3671c20ed449c4c70&language=en&page=1&primary_release_date.gte=2017-07-01&primary_release_date.lte=2017-08-28";
-    
-    [ServiceRequestManager sendGetWithMethod:urlRequest withCompletion:^(NSData *data, NSURLResponse *response, NSError *error){
-            arrDateMovieList =nil;
-        
-        if (!error){
-            NSError *error = nil;
-            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-            NSLog(@"%@",responseDict);
-            
-            arrDateMovieList = [[responseDict objectForKey:@"results"] mutableCopy];
-            [self movieListFetchForPopularity];
-            
-        }
-        else{
-            
-        }
-    }];
-    
-}
-
-#pragma mark - Movie List Fetch According to Popularity
-
--(void)movieListFetchForPopularity{
-    
-    NSString *urlRequest = @"http://api.themoviedb.org/3/discover/movie?api_key=da86572d94091de3671c20ed449c4c70&movie/popular";
-    
-    [ServiceRequestManager sendGetWithMethod:urlRequest withCompletion:^(NSData *data, NSURLResponse *response, NSError *error){
-        arrPopularMovieList =nil;
-        
-        if (!error){
-            NSError *error = nil;
-            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-            NSLog(@"%@",responseDict);
-            
-            arrPopularMovieList = [[responseDict objectForKey:@"results"] mutableCopy];
-            [self movieListFetchForTopRated];
-
-        }
-        else{
-            
-        }
-    }];
-
-    
-}
-
-
-#pragma mark - Movie List Fetch According to TopRated
-
--(void)movieListFetchForTopRated{
-    
-    NSString *urlRequest = @"http://api.themoviedb.org/3/discover/movie?api_key=da86572d94091de3671c20ed449c4c70&language=en&page=1&vote_count.gte=500&year=2017";
-    
-    [ServiceRequestManager sendGetWithMethod:urlRequest withCompletion:^(NSData *data, NSURLResponse *response, NSError *error){
-        arrTopRatedMovieList =nil;
-        
-        [CMHud hideHUDForView:dashController.view animated:YES];
-        
-        if (!error){
-            NSError *error = nil;
-            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-            NSLog(@"%@",responseDict);
-            
-            arrTopRatedMovieList = [[responseDict objectForKey:@"results"] mutableCopy];
-            [tblMovieList reloadData];
-            
-        }
-        else{
-            
-        }
-    }];
-
-    
-}
 
 #pragma mark - Load Image Asynchronously
 

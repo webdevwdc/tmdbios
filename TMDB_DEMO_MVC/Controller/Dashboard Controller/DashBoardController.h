@@ -10,4 +10,7 @@
 
 @interface DashBoardController : UIViewController
 
+
+-(void)movieListFetchForDateLimit;
+
 @end
